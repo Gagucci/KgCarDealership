@@ -34,7 +34,6 @@ public class UserInterface {
                 System.out.println("8 | Add a vehicle");
                 System.out.println("9 | Remove a vehicle");
                 System.out.println("0 | Exit");
-
                 System.out.println("Please select an option: ");
                 System.out.print("> ");
                 int choice = read.nextInt();
