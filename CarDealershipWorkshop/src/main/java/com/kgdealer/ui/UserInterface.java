@@ -1,13 +1,33 @@
 package com.kgdealer.ui;
 
+import com.kgdealer.data.DealershipFileManager;
+import com.kgdealer.model.Dealership;
+import com.kgdealer.model.Vehicle;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
 
-        static Scanner read = new Scanner(System.in);
+    private Dealership dealership;
+    static Scanner read = new Scanner(System.in);
+
+        public void init() {
+            this.dealership = new Dealership("KG Dealership", "123 Main St", "555-1234");
+            this.dealership.setInventory(DealershipFileManager.getDealership());
+        }
+
+        public void displayVehicles(List<Vehicle> vehicles) {
+            System.out.println("Displaying all vehicles:");
+            for (Vehicle vehicle : dealership.getVehicles()) {
+                System.out.println("vin: " + vehicle.getVin() + ", year: " + vehicle.getYear() + ", make: " + vehicle.getMake() + ", model: " + vehicle.getModel() + ", vehicleType: " + vehicle.getVehicleType() + ", color: " + vehicle.getColor() + ", odometer: " + vehicle.getOdometer() + ", price: " + vehicle.getPrice());
+            }
+        }
 
 
-        public static void startMenu() {
+        public void display() {
+            init();
             boolean running = false;
             System.out.println("Press enter to Start the program");
             System.out.println("Press any other key to exit");
@@ -59,7 +79,7 @@ public class UserInterface {
                         //processGetByVehicleTypeRequest();
                         break;
                     case 7:
-                        //processGetMVehiclesRequest();
+                        processGetAllVehiclesRequest();
                         break;
                     case 8:
                         //processAddVehicleRequest();
@@ -75,10 +95,6 @@ public class UserInterface {
                         System.out.println("Invalid choice. Please try again.");
                 }
             }
-
-        }
-
-        public void display() {
         }
 
         public void processGetHyPriceRequest() {
@@ -105,12 +121,13 @@ public class UserInterface {
             // Process get by vehicle type request implementation
         }
 
-        public void processGetMVehiclesRequest() {
-            // Process get vehicles request implementation
+        public void processGetAllVehiclesRequest() {
+            List<Vehicle> allVehicles = dealership.getVehicles();
+            displayVehicles(allVehicles);
         }
 
         public void processAddVehicleRequest() {
-            // Process add vehicle request implementation
+
         }
 
         public void processRemoveVehicleRequest() {

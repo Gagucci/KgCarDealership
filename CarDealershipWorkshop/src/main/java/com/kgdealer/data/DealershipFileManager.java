@@ -1,6 +1,5 @@
 package com.kgdealer.data;
 
-import com.kgdealer.model.Dealership;
 import com.kgdealer.model.Vehicle;
 
 import java.io.*;
@@ -11,7 +10,7 @@ public class DealershipFileManager {
     public static File file = new File("src/main/resources/inventory.csv");
     public static List<Vehicle> vehicles = new ArrayList<>();
 
-    public static List<Vehicle> getDealership() {
+    public static ArrayList<Vehicle> getDealership() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             String line;
@@ -43,19 +42,11 @@ public class DealershipFileManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return vehicles;
+        return (ArrayList<Vehicle>) vehicles;
     }
 
     public void saveDealership(){
 
     }
 
-    public static void displayVehicles() {
-        for (Vehicle vehicle : vehicles) {
-            System.out.println("VIN: " + vehicle.getVin() + ", Year: " + vehicle.getYear() + ", Make: " + vehicle.getMake() +
-                    ", Model: " + vehicle.getModel() + ", Vehicle Type: " + vehicle.getVehicleType() +
-                    ", Color: " + vehicle.getColor() + ", Odometer: " + vehicle.getOdometer() +
-                    ", Price: $" + vehicle.getPrice());
-        }
-    }
 }

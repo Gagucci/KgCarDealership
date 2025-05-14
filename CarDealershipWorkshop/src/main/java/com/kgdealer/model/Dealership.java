@@ -19,10 +19,12 @@ public class Dealership {
     public String getName() { return name; }
     public String getAddress() { return address; }
     public String getPhoneNumber() { return phoneNumber; }
+    public ArrayList<Vehicle> getInventory() { return inventory; }
 
     public void setName(String name) { this.name = name; }
     public void setAddress(String address) { this.address = address; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setInventory(ArrayList<Vehicle> inventory) { this.inventory = inventory; }
 
 
     public List<Vehicle> getVehiclesByPrice(double min, double max) {
