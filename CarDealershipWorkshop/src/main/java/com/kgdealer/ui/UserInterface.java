@@ -79,7 +79,7 @@ public class UserInterface {
         }
 
         public void display() {
-            // Display implementation
+            for (Vehicle vehicle : Inventory)
         }
 
         public void processGetHyPriceRequest() {

@@ -1,8 +1,6 @@
 package com.kgdealer.Main;
 
-import java.io.File;
-
-public class Main {
+public class Program {
     public static void main(String[] args) {
 
 
