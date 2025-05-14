@@ -41,31 +41,31 @@ public class UserInterface {
 
                 switch (choice) {
                     case 1:
-                        processGetHyPriceRequest();
+                        //processGetHyPriceRequest();
                         break;
                     case 2:
-                        processGetByMakeModelRequest();
+                        //processGetByMakeModelRequest();
                         break;
                     case 3:
-                        processGetByYearRequest();
+                        //processGetByYearRequest();
                         break;
                     case 4:
-                        processGetHyColorRequest();
+                        //processGetHyColorRequest();
                         break;
                     case 5:
-                        processGetByMileageRequest();
+                        //processGetByMileageRequest();
                         break;
                     case 6:
-                        processGetByVehicleTypeRequest();
+                        //processGetByVehicleTypeRequest();
                         break;
                     case 7:
-                        processGetMVehiclesRequest();
+                        //processGetMVehiclesRequest();
                         break;
                     case 8:
-                        processAddVehicleRequest();
+                        //processAddVehicleRequest();
                         break;
                     case 9:
-                        processRemoveVehicleRequest();
+                        //processRemoveVehicleRequest();
                         break;
                     case 0:
                         System.out.println("Exiting the program...");
@@ -79,7 +79,6 @@ public class UserInterface {
         }
 
         public void display() {
-            for (Vehicle vehicle : Inventory)
         }
 
         public void processGetHyPriceRequest() {
