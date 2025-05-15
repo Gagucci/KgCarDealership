@@ -2,7 +2,9 @@
 
 A Java CLI car dealership application. Users add and remove cars, and search the inventory by multiple different parameters.
 
-![Project Logo or Screenshot] <./>
+
+## Screenshots
+<img src="./Screenshot 2025-05-15 150321.png">
 
 ## Features
 
