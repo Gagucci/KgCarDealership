@@ -5,7 +5,6 @@ import com.kgdealer.model.Dealership;
 import com.kgdealer.model.Vehicle;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -62,8 +61,20 @@ public class UserInterface {
             System.out.println("0 | Exit");
             System.out.println("Please select an option: ");
             System.out.print("> ");
-            int choice = read.nextInt();
-            read.nextLine();
+
+            String choiceStr = read.nextLine().trim();
+            int choice;
+
+            try {
+                choice = Integer.parseInt(choiceStr);
+                if (choice < 0 || choice > 9) {
+                    System.out.println("Invalid choice. Please try again.");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -73,13 +84,13 @@ public class UserInterface {
                     processGetByMakeModelRequest();
                     break;
                 case 3:
-                    //processGetByYearRequest();
+                    processGetByYearRequest();
                     break;
                 case 4:
-                    //processGetHyColorRequest();
+                    processGetHyColorRequest();
                     break;
                 case 5:
-                    //processGetByMileageRequest();
+                    processGetByMileageRequest();
                     break;
                 case 6:
                     //processGetByVehicleTypeRequest();
@@ -171,11 +182,46 @@ public class UserInterface {
 
     public void processGetHyColorRequest() {
         // Process get by color request implementation
+        System.out.print("Enter color: ");
+        String color = read.nextLine();
+        while (!color.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter only letters.");
+            System.out.print("Enter color: ");
+            color = read.nextLine();
+        }
+
+        ArrayList<Vehicle> vehicles = dealership.getVehiclesByColor(color);
+        if (vehicles.isEmpty()) {
+            System.out.println("No vehicles found with the specified color.");
+        } else {
+            displayVehicles(vehicles);
+        }
     }
 
 
     public void processGetByMileageRequest() {
         // Process get by mileage request implementation
+        System.out.print("Enter minimum mileage: ");
+        while (!read.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            System.out.print("Enter minimum mileage: ");
+            read.next();
+        }
+        int minMileage = read.nextInt();
+
+        System.out.print("Enter maximum mileage: ");
+        while (!read.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            System.out.print("Enter maximum mileage: ");
+            read.next();
+        }
+        int maxMileage = read.nextInt();
+        ArrayList<Vehicle> vehicles = dealership.getVehiclesByMileage(minMileage, maxMileage);
+        if (vehicles.isEmpty()) {
+            System.out.println("No vehicles found with the specified mileage.");
+        } else {
+            displayVehicles(vehicles);
+        }
     }
 
 
@@ -246,30 +292,29 @@ public class UserInterface {
     }
 
 
-
     public void processRemoveVehicleRequest() {
 
-            processGetAllVehiclesRequest();
+        processGetAllVehiclesRequest();
+        System.out.print("Enter the VIN of the vehicle to remove: ");
+        while (!read.hasNextInt()) {
+            System.out.println("Invalid input. VIN must be a number.");
             System.out.print("Enter the VIN of the vehicle to remove: ");
-            while (!read.hasNextInt()) {
-                System.out.println("Invalid input. VIN must be a number.");
-                System.out.print("Enter the VIN of the vehicle to remove: ");
-                read.next();
-            }
-            int vin = read.nextInt();
-            read.nextLine();
+            read.next();
+        }
+        int vin = read.nextInt();
+        read.nextLine();
 
-            dealership.removeVehicle(vin);
-            System.out.println("Vehicle with VIN " + vin + " has been removed successfully.");
-            System.out.println("Updated vehicle list:");
-            ArrayList<Vehicle> vehicles = dealership.getVehicles();
-            if (vehicles.isEmpty()) {
-                System.out.println("No vehicles found.");
-            } else {
-                displayVehicles(vehicles);
-            }
+        dealership.removeVehicle(vin);
+        System.out.println("Vehicle with VIN " + vin + " has been removed successfully.");
+        System.out.println("Updated vehicle list:");
+        ArrayList<Vehicle> vehicles = dealership.getVehicles();
+        if (vehicles.isEmpty()) {
+            System.out.println("No vehicles found.");
+        } else {
+            displayVehicles(vehicles);
+        }
 
-            DealershipFileManager.saveDealership(dealership.getVehicles());
+        DealershipFileManager.saveDealership(dealership.getVehicles());
     }
 
 }
