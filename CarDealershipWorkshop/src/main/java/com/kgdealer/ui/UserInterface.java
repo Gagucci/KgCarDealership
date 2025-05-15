@@ -5,7 +5,10 @@ import com.kgdealer.model.Dealership;
 import com.kgdealer.model.Vehicle;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class UserInterface {
 
@@ -18,7 +21,9 @@ public class UserInterface {
 
 
     public void displayVehicles(ArrayList<Vehicle> vehicles) {
+        Collections.sort(vehicles, Comparator.comparingInt(Vehicle::getVin));
         System.out.println("Displaying vehicles:");
+        loadingBar();
         System.out.printf("%-10s %-6s %-10s %-10s %-15s %-10s %-10s %-10s%n",
                 "VIN", "Year", "Make", "Model", "Type", "Color", "Odometer", "Price");
         System.out.println("----------------------------------------------------------------------------------------");
@@ -40,6 +45,7 @@ public class UserInterface {
 
         if (start.isEmpty()) {
             System.out.println("Starting the program...");
+            loadingBar();
             running = true;
         } else {
             System.out.println("Exiting the program...");
@@ -93,7 +99,7 @@ public class UserInterface {
                     processGetByMileageRequest();
                     break;
                 case 6:
-                    //processGetByVehicleTypeRequest();
+                    processGetByVehicleTypeRequest();
                     break;
                 case 7:
                     processGetAllVehiclesRequest();
@@ -123,6 +129,7 @@ public class UserInterface {
             read.next();
         }
         double minPrice = read.nextDouble();
+        read.nextLine();
 
         System.out.print("Enter maximum price: ");
         while (!read.hasNextDouble()) {
@@ -131,6 +138,7 @@ public class UserInterface {
             read.next();
         }
         double maxPrice = read.nextDouble();
+        read.nextLine();
 
         ArrayList<Vehicle> vehicles = dealership.getVehiclesByPrice(minPrice, maxPrice);
         displayVehicles(vehicles);
@@ -167,6 +175,8 @@ public class UserInterface {
             read.next();
         }
         int minYear = read.nextInt();
+        read.nextLine();
+
         System.out.print("Enter maximum year: ");
         while (!read.hasNextInt()) {
             System.out.println("Invalid input. Please enter a valid number.");
@@ -174,6 +184,7 @@ public class UserInterface {
             read.next();
         }
         int maxYear = read.nextInt();
+        read.nextLine();
 
         ArrayList<Vehicle> vehicles = dealership.getVehiclesByYear(minYear, maxYear);
         displayVehicles(vehicles);
@@ -181,7 +192,6 @@ public class UserInterface {
 
 
     public void processGetHyColorRequest() {
-        // Process get by color request implementation
         System.out.print("Enter color: ");
         String color = read.nextLine();
         while (!color.matches("[a-zA-Z]+")) {
@@ -200,7 +210,6 @@ public class UserInterface {
 
 
     public void processGetByMileageRequest() {
-        // Process get by mileage request implementation
         System.out.print("Enter minimum mileage: ");
         while (!read.hasNextInt()) {
             System.out.println("Invalid input. Please enter a valid number.");
@@ -208,6 +217,7 @@ public class UserInterface {
             read.next();
         }
         int minMileage = read.nextInt();
+        read.nextLine();
 
         System.out.print("Enter maximum mileage: ");
         while (!read.hasNextInt()) {
@@ -216,6 +226,8 @@ public class UserInterface {
             read.next();
         }
         int maxMileage = read.nextInt();
+        read.nextLine();
+
         ArrayList<Vehicle> vehicles = dealership.getVehiclesByMileage(minMileage, maxMileage);
         if (vehicles.isEmpty()) {
             System.out.println("No vehicles found with the specified mileage.");
@@ -226,7 +238,21 @@ public class UserInterface {
 
 
     public void processGetByVehicleTypeRequest() {
-        // Process get by vehicle type request implementation
+
+        System.out.print("Enter vehicle type: ");
+        String vehicleType = read.nextLine();
+        while (!vehicleType.matches("[a-zA-Z]+")) {
+            System.out.println("Invalid input. Please enter only letters.");
+            System.out.print("Enter vehicle type: ");
+            vehicleType = read.nextLine();
+        }
+
+        ArrayList<Vehicle> vehicles = dealership.getVehiclesByType(vehicleType);
+        if (vehicles.isEmpty()) {
+            System.out.println("No vehicles found with the specified type.");
+        } else {
+            displayVehicles(vehicles);
+        }
     }
 
 
@@ -293,7 +319,6 @@ public class UserInterface {
 
 
     public void processRemoveVehicleRequest() {
-
         processGetAllVehiclesRequest();
         System.out.print("Enter the VIN of the vehicle to remove: ");
         while (!read.hasNextInt()) {
@@ -304,9 +329,14 @@ public class UserInterface {
         int vin = read.nextInt();
         read.nextLine();
 
-        dealership.removeVehicle(vin);
-        System.out.println("Vehicle with VIN " + vin + " has been removed successfully.");
-        System.out.println("Updated vehicle list:");
+        boolean removed = dealership.removeVehicle(vin);
+        if (removed) {
+            System.out.println("Vehicle with VIN " + vin + " has been removed successfully.");
+        } else {
+            System.out.println("Vehicle with VIN " + vin + " not found.");
+        }
+
+        System.out.println("Vehicle list has been updated.");
         ArrayList<Vehicle> vehicles = dealership.getVehicles();
         if (vehicles.isEmpty()) {
             System.out.println("No vehicles found.");
@@ -317,5 +347,17 @@ public class UserInterface {
         DealershipFileManager.saveDealership(dealership.getVehicles());
     }
 
+    public static void loadingBar() {
+        try {
+            for (int i = 0; i <= 100; i += 20) {
+                System.out.print("\rLoading: [" + "=".repeat(i / 5) + "] " + i + "%");
+                TimeUnit.MILLISECONDS.sleep(100);
+            }
+            System.out.println("\n");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Loading interrupted.");
+        }
+    }
 }
 

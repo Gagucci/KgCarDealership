@@ -100,15 +100,12 @@ public class Dealership {
         DealershipFileManager.saveDealership(inventory);
     }
 
-    public void removeVehicle(int vin) {
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.get(i).getVin() == vin) {
-                inventory.remove(i);
-                break;
-            } else {
-                System.out.println("Vehicle with VIN " + vin + " not found.");
-            }
+    public boolean removeVehicle(int vin) {
+        boolean removed = inventory.removeIf(vehicle -> vehicle.getVin() == vin);
+        if (removed) {
+            DealershipFileManager.saveDealership(inventory);
         }
+        return removed;
     }
 
 
