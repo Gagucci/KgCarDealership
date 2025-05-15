@@ -22,3 +22,6 @@ A Java CLI car dealership application. Users add and remove cars, and search the
    ```sh
    git clone https://github.com/Gagucci/KgCarDealership.git
    cd KgCarDealership
+
+## License:
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
