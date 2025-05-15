@@ -1,5 +1,7 @@
 package com.kgdealer.model;
 
+import com.kgdealer.data.DealershipFileManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,13 +9,13 @@ public class Dealership {
     private String name;
     private String address;
     private String phoneNumber;
-    ArrayList<Vehicle> inventory;
+    private ArrayList<Vehicle> inventory;
 
     public Dealership(String name, String address, String phoneNumber) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.inventory = new ArrayList<Vehicle>();
+        this.inventory = DealershipFileManager.getDealership();
     }
 
     public String getName() { return name; }
@@ -27,8 +29,8 @@ public class Dealership {
     public void setInventory(ArrayList<Vehicle> inventory) { this.inventory = inventory; }
 
 
-    public List<Vehicle> getVehiclesByPrice(double min, double max) {
-        List<Vehicle> filteredVehicles = new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByPrice(double min, double max) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
             if (vehicle.getPrice() >= min && vehicle.getPrice() <= max) {
                 filteredVehicles.add(vehicle);
@@ -37,18 +39,20 @@ public class Dealership {
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehiclesByMakeModel(String make, String model) {
-        List<Vehicle> filteredVehicles =  new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByMakeModel(String make, String model) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
-            if (vehicle.getMake().equalsIgnoreCase(make) && vehicle.getModel().equalsIgnoreCase(model)) {
+            boolean matchesMake = (make == null || make.isEmpty()) || vehicle.getMake().equalsIgnoreCase(make);
+            boolean matchesModel = (model == null || model.isEmpty()) || vehicle.getModel().equalsIgnoreCase(model);
+            if (matchesMake && matchesModel) {
                 filteredVehicles.add(vehicle);
             }
         }
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehiclesByYear(int minYear, int maxYear) {
-        List<Vehicle> filteredVehicles = new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByYear(int minYear, int maxYear) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
             if (vehicle.getYear() >= minYear && vehicle.getYear() <= maxYear) {
                 filteredVehicles.add(vehicle);
@@ -57,8 +61,8 @@ public class Dealership {
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehiclesByColor(String color) {
-        List<Vehicle> filteredVehicles = new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByColor(String color) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
             if (vehicle.getColor().equalsIgnoreCase(color)) {
                 filteredVehicles.add(vehicle);
@@ -67,8 +71,8 @@ public class Dealership {
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehiclesByMileage(int minMileage, int maxMileage) {
-        List<Vehicle> filteredVehicles = new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByMileage(int minMileage, int maxMileage) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
             if (vehicle.getOdometer() >= minMileage && vehicle.getOdometer() <= maxMileage) {
                 filteredVehicles.add(vehicle);
@@ -77,8 +81,8 @@ public class Dealership {
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehiclesByType(String type) {
-        List<Vehicle> filteredVehicles = new ArrayList<>();
+    public ArrayList<Vehicle> getVehiclesByType(String type) {
+        ArrayList<Vehicle> filteredVehicles = new ArrayList<>();
         for (Vehicle vehicle : inventory) {
             if (vehicle.getVehicleType().equalsIgnoreCase(type)) {
                 filteredVehicles.add(vehicle);
@@ -87,12 +91,13 @@ public class Dealership {
         return filteredVehicles;
     }
 
-    public List<Vehicle> getVehicles() {
+    public ArrayList<Vehicle> getVehicles() {
         return inventory;
     }
 
     public void addVehicle(Vehicle vehicle) {
         inventory.add(vehicle);
+        DealershipFileManager.saveDealership(inventory);
     }
 
     public void removeVehicle(int vin) {
@@ -100,6 +105,8 @@ public class Dealership {
             if (inventory.get(i).getVin() == vin) {
                 inventory.remove(i);
                 break;
+            } else {
+                System.out.println("Vehicle with VIN " + vin + " not found.");
             }
         }
     }

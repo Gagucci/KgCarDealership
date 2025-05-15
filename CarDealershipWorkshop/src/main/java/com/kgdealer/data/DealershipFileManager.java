@@ -4,49 +4,60 @@ import com.kgdealer.model.Vehicle;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DealershipFileManager {
-    public static File file = new File("src/main/resources/inventory.csv");
-    public static List<Vehicle> vehicles = new ArrayList<>();
 
     public static ArrayList<Vehicle> getDealership() {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/inventory.csv"))) {
             String line;
-            bufferedReader.readLine();
-
+            boolean isHeader = true;
             while ((line = bufferedReader.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip the header
+                    continue;
+                }
+                if (line.trim().isEmpty()) {
+                    continue; // Skip empty lines
+                }
                 String[] column = line.split("\\|");
                 if (column.length != 8) {
                     System.out.println("Invalid line format at line: " + line);
-                } else {
-                    int vin = Integer.parseInt(column[0]);
-                    int year = Integer.parseInt(column[1]);
-                    String make = column[2];
-                    String model = column[3];
-                    String vehicleType = column[4];
-                    String color = column[5];
-                    int odometer = Integer.parseInt(column[6]);
-                    double price = Double.parseDouble(column[7]);
-
-                    Vehicle v = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
-                    vehicles.add(v);
+                    continue;
                 }
+                int vin = Integer.parseInt(column[0]);
+                int year = Integer.parseInt(column[1]);
+                String make = column[2];
+                String model = column[3];
+                String vehicleType = column[4];
+                String color = column[5];
+                int odometer = Integer.parseInt(column[6]);
+                double price = Double.parseDouble(column[7]);
 
+                Vehicle v = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
+                vehicles.add(v);
             }
-            bufferedReader.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + e.getMessage());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error reading file: " + e.getMessage());
         }
-        return (ArrayList<Vehicle>) vehicles;
+        return vehicles;
     }
 
-    public void saveDealership(){
+    public static void saveDealership(ArrayList<Vehicle> vehicles) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/inventory.csv"));
+            // Write the header
+            bufferedWriter.write("vin|year|make|model|vehicleType|color|odometer|price");
+            bufferedWriter.newLine();
 
+            for (Vehicle vehicle : vehicles) {
+                bufferedWriter.write(vehicle.getVin() + "|" + vehicle.getYear() + "|" + vehicle.getMake() + "|" + vehicle.getModel() + "|" + vehicle.getVehicleType() + "|" + vehicle.getColor() + "|" + vehicle.getOdometer() + "|" + vehicle.getPrice());
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
     }
-
 }
